@@ -1,0 +1,49 @@
+import { StandardTableView, VerticalBox, HorizontalBox, Button } from "std-widgets.slint";
+
+export global CsvAdapter {
+    in-out property <[TableColumn]> columns;
+    in-out property <[[StandardListViewItem]]> rows;
+    in-out property <string> file-name: "No file loaded";
+    in-out property <int> row-count: 0;
+    in-out property <int> col-count: 0;
+    callback open-file();
+}
+
+export component App inherits Window {
+    title: "CSV Viewer (Slint)";
+    preferred-width: 900px;
+    preferred-height: 600px;
+
+    VerticalBox {
+        // 工具栏
+        HorizontalBox {
+            padding: 4px;
+            spacing: 12px;
+
+            Button {
+                text: "📂 Open CSV";
+                clicked => { CsvAdapter.open-file(); }
+            }
+
+            Text {
+                text: CsvAdapter.file-name;
+                vertical-alignment: center;
+            }
+
+            Rectangle { horizontal-stretch: 1; }
+
+            Text {
+                text: "Rows: " + CsvAdapter.row-count + " | Cols: " + CsvAdapter.col-count;
+                font-size: 11px;
+                vertical-alignment: center;
+            }
+        }
+
+        // 表格
+        StandardTableView {
+            vertical-stretch: 1;
+            columns: CsvAdapter.columns;
+            rows: CsvAdapter.rows;
+        }
+    }
+}
